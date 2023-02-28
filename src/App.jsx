@@ -1,25 +1,34 @@
-import { React, useState, useEffect } from "react";
-
+/* global google */
+import { React, useEffect } from "react";
 import { Container, Button } from "semantic-ui-react";
-import "semantic-ui-css/semantic.min.css";
+import { useSelector } from "react-redux";
 import weather from "./weatherAPI";
-
+import GooglePlaces from "./autocomplete";
+import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 
 function App() {
-  const [weatherData, setWeatherData] = useState();
-
-  const getWeather = async (lat, lon) => {
-    const  data = await weather(lat, lon)
-    setWeatherData(data)
-  console.log('weatherData :>> ', data.name);
-  };
   
+  useEffect(() => {
+    let autocomplete =  window.google;
+    console.log('autocomplete :>> ', autocomplete);
+  }, []);
+
+  const getWeather = (lat, lon) => {
+    weather(lat, lon);
+  };
+
+  const weatherData = useSelector((state) => state.app.weatherData);
+
+  // const autocomplete = google.maps.places;
+  // console.log("autocomplete :>> ", autocomplete);
+
   return (
     <Container>
       <div></div>
       <div className="content">
         <div className="city-list">
+          <GooglePlaces />
           <Button onClick={() => getWeather(55.755864, 37.617698)}>
             Москва
           </Button>
@@ -32,12 +41,8 @@ function App() {
             Владивосток
           </Button>
         </div>
-        <div className="weather">{ 
-          weatherData ? weatherData.name : ''
-          
-        }</div>
+        <div className="weather">{weatherData.name}</div>
       </div>
-     
     </Container>
   );
 }
